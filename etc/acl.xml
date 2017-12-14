@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Meem_DroppedCheckout::menu" title="Dropped Checkout" translate="title" sortOrder="22">
+                    <resource id="Meem_DroppedCheckout::listing" title="Listing" translate="title" sortOrder="10">
+                        <resource id="Meem_DroppedCheckout::view" title="View" sortOrder="10" translate="title" >
+                            <resource id="Meem_DroppedCheckout::update" translate="title" title="Update" sortOrder="20" />
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

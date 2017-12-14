@@ -163,6 +163,7 @@
         <column name="customer_email" class="Meem\DroppedCheckout\Ui\Component\Listing\Column\ShippingEmail">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
+                    <item name="indexField" xsi:type="string">entity_id</item>
                     <item name="filter" xsi:type="string">text</item>
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="align" xsi:type="string">left</item>
@@ -205,6 +206,20 @@
                     <item name="align" xsi:type="string">left</item>
                     <item name="label" xsi:type="string" translate="true">Currency</item>
                     <item name="sortOrder" xsi:type="number">50</item>
+                </item>
+            </argument>
+        </column>
+        <column name="dropped_status" class="Meem\DroppedCheckout\Ui\Component\Listing\Column\DroppedState">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="indexField" xsi:type="string">entity_id</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
+                    <!--<item name="dataType" xsi:type="string">text</item>-->
+                    <item name="align" xsi:type="string">left</item>
+                    <item name="label" xsi:type="string" translate="true">Dropped State</item>
+                    <item name="sortable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                    <item name="fieldClass" xsi:type="string">dropped-state-listing</item>
                 </item>
             </argument>
         </column>

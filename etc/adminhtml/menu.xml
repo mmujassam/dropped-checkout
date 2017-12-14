@@ -6,6 +6,6 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Meem_DroppedCheckout::Meem_DroppedCheckout_index" title="Dropped Quotes" module="Meem_DroppedCheckout" parent="Magento_Backend::marketing_communications"  sortOrder="11" dependsOnModule="Meem_DroppedCheckout" action="droppedcheckout/quotes/index" resource="Meem_DroppedCheckout::Meem_DroppedCheckout_index"/>
+        <add id="Meem_DroppedCheckout::Meem_DroppedCheckout_index" title="Dropped Quotes" module="Meem_DroppedCheckout" parent="Magento_Backend::marketing_communications"  sortOrder="11" dependsOnModule="Meem_DroppedCheckout" action="droppedcheckout/quotes/index" resource="Meem_DroppedCheckout::menu"/>
     </menu>
 </config>

@@ -78,4 +78,12 @@ class Status extends Action
         $data = $this->jsonFactory->create();
         return $data->setData($response);
     }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed("Meem_DroppedCheckout::update");
+    }
 }

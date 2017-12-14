@@ -38,4 +38,12 @@ class Info extends Action
         $resultPage->getConfig()->getTitle()->set((__('Quote Info')));
         return $resultPage;
     }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed("Meem_DroppedCheckout::view");
+    }
 }

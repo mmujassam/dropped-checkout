@@ -25,10 +25,21 @@ class Index extends Action
         $this->resultPageFactory = $resultPageFactory;
     }
 
+    /**
+     * @return \Magento\Framework\View\Result\Page
+     */
     public function execute()
     {
 		$resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->set((__('Quotes')));
 		return $resultPage;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed("Meem_DroppedCheckout::listing");
     }
 }

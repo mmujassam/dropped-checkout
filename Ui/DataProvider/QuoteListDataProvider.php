@@ -54,7 +54,7 @@ class QuoteListDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvide
         if ($salesQuotes){
             $this->collection->addFieldToFilter('main_table.entity_id', ['nin' => $salesQuotes]);
         }
-        $this->collection->addFieldToSelect(['created_at', 'updated_at', 'quote_currency_code', 'grand_total', 'items_qty', 'customer_firstname', 'customer_email']);
+        $this->collection->addFieldToSelect(['created_at', 'updated_at', 'quote_currency_code', 'grand_total', 'items_qty', 'customer_firstname', 'customer_email', 'dropped_status' => 'is_active']);
         /*$this->collection->getSelect()->joinLeft(
             ['address' => $this->collection->getTable('quote_address')],
             "address.quote_id = main_table.entity_id",
