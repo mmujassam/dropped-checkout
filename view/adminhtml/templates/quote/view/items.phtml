@@ -1,0 +1,93 @@
+<?php
+/** @var $block \Meem\DroppedCheckout\Block\Adminhtml\Quote\Info */
+?>
+
+<?php
+$_quote = $block->getQuote();
+
+?>
+<?php foreach ($_quote->getAllVisibleItems() as $visibleItem):?>
+    <?php $product = $visibleItem->getProduct(); ?>
+<tbody class="even">
+    <tr>
+    <td class="col-product"><div id="order_item_431385">
+            <div id="order_item_431385_title" class="product-title">
+                <?= $product->getName() ?>
+            </div>
+
+            <div class="product-sku-block">
+                <span>SKU:</span> <?= $visibleItem->getSku() ?>
+            </div>
+            <?php if ($visibleItem->getProductType() == "simple"):?>
+                <?php $options = $block->getOptions($visibleItem)?>
+                <?php foreach ($options as $option):?>
+                    <dl class="item-options">
+                        <dt><?= $option['label'] ?>:</dt>
+                        <dd>
+                            <?= $option['value'] ?>
+                        </dd>
+                    </dl>
+                <?php endforeach; ?>
+            <?php elseif ($visibleItem->getProductType() == "configurable"):?>
+                <?php foreach ($visibleItem->getBuyRequest()->getSuperAttribute() as $attribute => $value):?>
+                    <?php $optionData = $block->getConfigOptions($attribute);?>
+                    <dl class="item-options">
+                        <dt><?= $optionData->getDefaultFrontendLabel() ?>:</dt>
+                        <?php foreach ($optionData->getOptions() as $attributeOption):?>
+                            <?php if ($attributeOption->getValue() == $value): ?>
+                                <dd>
+                                    <?= $attributeOption->getLabel() ?>
+                                </dd>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </dl>
+                <?php endforeach;?>
+                <?php $options = $block->getOptions($visibleItem)?>
+                <?php foreach ($options as $option):?>
+                    <dl class="item-options">
+                        <dt><?= $option['label'] ?>:</dt>
+                        <dd>
+                            <?= $option['value'] ?>
+                        </dd>
+                    </dl>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </td>
+    <!--<td class="col-status">Shipped</td>-->
+<!--    <td class="col-price-original"><span class="price">--><!--</span></td>-->
+    <td class="col-price">
+        <div class="price-excl-tax">
+            <span class="price"><?= $block->getFormattedPrice($visibleItem->getPrice() - $visibleItem->getTaxAmount()) ?></span>
+        </div>
+    </td>
+    <td class="col-ordered-qty">
+        <table class="qty-table">
+            <tbody>
+            <tr>
+                <th>Quoted</th>
+                <td><?= $visibleItem->getQty() ?></td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+    <td class="col-subtotal">
+        <div class="price-excl-tax">
+            <span class="price"><?= $block->getFormattedPrice($visibleItem->getRowTotal()) ?></span>
+        </div>
+    </td>
+    <td class="col-tax-amount"><span class="price"><?= $block->getFormattedPrice($visibleItem->getTaxAmount()) ?></span></td>
+    <td class="col-tax-percent"><?= $visibleItem->getTaxPercent() ?></td>
+    <td class="col-discont"><span class="price"><?= $block->getFormattedPrice($visibleItem->getDiscountAmount()) ?></span></td>
+    <td class="col-total last">
+        <span class="price"><?= $block->getFormattedPrice($visibleItem->getRowTotalInclTax()) ?></span>
+    </td>
+</tr>
+</tbody>
+<?php endforeach;?>
+
+<style>
+    td.col-product{
+        max-width:400px;
+    }
+</style>

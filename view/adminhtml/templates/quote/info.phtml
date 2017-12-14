@@ -1,0 +1,340 @@
+<?php
+/** @var $block \Meem\DroppedCheckout\Block\Adminhtml\Quote\Info */
+
+?>
+<?php $_quote = $block->getQuote() ?>
+<?php
+
+$quoteAdminDate = $block->formatDate(
+    $block->getQuoteAdminDate($_quote->getCreatedAt()),
+    \IntlDateFormatter::MEDIUM,
+    true
+);
+$quoteStoreDate = $block->formatDate(
+    $_quote->getCreatedAt(),
+    \IntlDateFormatter::MEDIUM,
+    true,
+    $block->getTimezoneForStore($_quote->getStore())
+);
+?>
+<?php
+$status = $block->getStatuses();
+$statusData = $block->getStatusByQuote();
+?>
+<section class="admin__page-section order-view-account-information">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */ echo __('Conversion Status') ?></span>
+        <?php if ($statusData->getStatusId()): ?>
+            <button class="quote-status"><?= array_key_exists($statusData->getStatusId(), $status) ? $status[$statusData->getStatusId()] : "" ?></button>
+        <?php endif; ?>
+    </div>
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-information">
+            <div class="admin__page-section-item-title">
+                <span class="title">Cart Information</span>
+            </div>
+            <div class="admin__page-section-item-content">
+                <table class="admin__table-secondary order-information-table">
+                    <tr>
+                        <th><?php /* @escapeNotVerified */ echo __('Created At') ?></th>
+                        <td><?php /* @escapeNotVerified */ echo $quoteAdminDate ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php /* @escapeNotVerified */ echo __('Cart Status') ?></th>
+                        <td><span><?php /* @escapeNotVerified */ echo $_quote->getIsActive() ? 'Active Cart' : 'Dropped' ?></span></td>
+                    </tr>
+                    <?php if ($block->isSingleStoreMode() == false):?>
+                        <tr>
+                            <th><?php /* @escapeNotVerified */ echo __('Purchased From') ?></th>
+                            <td><?php /* @escapeNotVerified */ echo $block->getOrderStoreName() ?></td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <th><?= __('DROPPED AT:') ?></th>
+                        <td>
+                            <button class="drop-state">
+                                <?php if (!$_quote->getShippingAddress()->getFirstname()): ?>
+                                    <?= __("Cart") ?>
+                                <?php else: ?>
+                                    <?= $_quote->getPayment()->getMethod() ? __("Billing & Payment Step") : __("Shipping Step")  ?>
+                                <?php endif; ?>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php if ($_quote->getGlobalCurrencyCode() != $_quote->getBaseCurrencyCode()): ?>
+                        <tr>
+                            <th><?php /* @escapeNotVerified */ echo __('%1 / %2 rate:', $_quote->getGlobalCurrencyCode(), $_quote->getBaseCurrencyCode()) ?></th>
+                            <td><?php /* @escapeNotVerified */ echo $_quote->getBaseToGlobalRate() ?></td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php if ($_quote->getBaseCurrencyCode() != $_quote->getQuoteCurrencyCode()): ?>
+                        <tr>
+                            <th><?php /* @escapeNotVerified */ echo __('%1 / %2 rate:', $_quote->getQuoteCurrencyCode(), $_quote->getBaseCurrencyCode()) ?></th>
+                            <th><?php /* @escapeNotVerified */ echo $_quote->getBaseToQuoteRate() ?></th>
+                        </tr>
+                    <?php endif; ?>
+                </table>
+            </div>
+        </div>
+        <div class="admin__page-section-item order-account-information">
+            <div class="admin__page-section-item-title">
+                <span class="title"><?php /* @escapeNotVerified */ echo __('Customer Information') ?></span>
+            </div>
+            <div class="admin__page-section-item-content">
+                <table class="admin__table-secondary order-account-information-table">
+                    <tr>
+                        <th><?php /* @escapeNotVerified */ echo __('Customer Name') ?></th>
+                        <td>
+                            <?php if ($_customerUrl = $block->getCustomerViewUrl()) : ?>
+                                <a href="<?php /* @escapeNotVerified */ echo $_customerUrl ?>" target="_blank">
+                                    <span><?php echo $block->escapeHtml($block->getCustomerName()) ?></span>
+                                </a>
+                            <?php else: ?>
+                                <?php echo $block->escapeHtml($block->getCustomerName()) ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php /* @escapeNotVerified */ echo __('Email') ?></th>
+                        <td><a href="mailto:<?php echo $block->escapeHtml($_quote->getCustomerEmail()) ?>"><?php echo $block->escapeHtml($_quote->getCustomerEmail()) ?></a></td>
+                    </tr>
+                    <?php if ($_groupName = $block->getCustomerGroupName()) : ?>
+                        <tr>
+                            <th><?php /* @escapeNotVerified */ echo __('Customer Group') ?></th>
+                            <td><?php /* @escapeNotVerified */ echo $_groupName ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="admin__page-section order-addresses">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */ echo __('Address Information') ?></span>
+    </div>
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-billing-address">
+            <?php /* Billing Address */?>
+            <div class="admin__page-section-item-title">
+                <span class="title"><?php /* @escapeNotVerified */ echo __('Billing Address') ?></span>
+            </div>
+            <address class="admin__page-section-item-content"><?php /* @escapeNotVerified */ echo $block->getFormattedAddress($_quote->getBillingAddress()); ?></address>
+        </div>
+        <?php if (!$block->getQuote()->getIsVirtual()): ?>
+            <div class="admin__page-section-item order-shipping-address">
+                <?php /* Shipping Address */ ?>
+                <div class="admin__page-section-item-title">
+                    <span class="title"><?php /* @escapeNotVerified */ echo __('Shipping Address') ?></span>
+                </div>
+                <address class="admin__page-section-item-content"><?php /* @escapeNotVerified */ echo $block->getFormattedAddress($_quote->getShippingAddress()); ?></address>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>
+
+<section class="admin__page-section order-shipment-billing-shipping">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */ echo __('Payment &amp; Shipping Method') ?></span>
+    </div>
+    <div class="admin__page-section-content">
+
+        <?php /* Billing Address */ ?>
+        <div class="admin__page-section-item order-payment-method">
+            <div class="admin__page-section-item-title">
+                <span class="title"><?php /* @escapeNotVerified */ echo __('Payment Method') ?></span>
+            </div>
+            <div class="admin__page-section-item-content">
+                <div><?= $block->getPaymentMethod() ?></div>
+                <div class="order-payment-currency"><?php /* @escapeNotVerified */ echo __('Product Added in cart using %1.', $_quote->getQuoteCurrencyCode()) ?></div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <span class="title">Items In cart</span>
+    </div>
+    <div class="admin__table-wrapper">
+        <table class="data-table admin__table-primary edit-order-table">
+            <thead>
+                <tr class="headings">
+                    <th class="col-product"><span>Product</span></th>
+                    <!--<th class="col-status"><span>Item Status</span></th>-->
+                    <!--<th class="col-price-original"><span>Original Price</span></th>-->
+                    <th class="col-price"><span>Price</span></th>
+                    <th class="col-ordered-qty"><span>Qty</span></th>
+                    <th class="col-subtotal"><span>Subtotal</span></th>
+                    <th class="col-tax-amount"><span>Tax Amount</span></th>
+                    <th class="col-tax-percent"><span>Tax Percent</span></th>
+                    <th class="col-discont"><span>Discount Amount</span></th>
+                    <th class="col-total last"><span>Row Total</span></th>
+                </tr>
+            </thead>
+            <?php echo $this->getChildHtml('quote_items')?>
+        </table>
+    </div>
+</section>
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <span class="title"><?php /* @escapeNotVerified */ echo __('Quote Totals') ?></span>
+    </div>
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-comments-history">
+            <div class="admin__page-section-item-title">
+                <span class="title">Status History</span>
+            </div>
+            <div id="order_history_block" class="edit-order-comments">
+                <div class="order-history-block" id="history_form">
+                    <form action="" id="quote-status-form">
+                        <input type="hidden" name="quote_id" value="<?= $this->getRequest()->getParam('entity_id') ?>">
+                        <input type="hidden" name="data_id" value="<?= $statusData->getId() ?>">
+                    <div class="admin__field">
+                        <label for="history_status" class="admin__field-label">Status</label>
+                        <div class="admin__field-control">
+                            <select name="status_id" id="history_status" class="admin__control-select">
+                                <?php foreach ($status as $value => $label): ?>
+                                    <option value="<?= $value ?>" <?= $statusData->getStatusId() == $value ? 'selected':'' ?>><?= $label ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="admin__field">
+                            <label for="history_comment" class="admin__field-label">
+                                Comment
+                            </label>
+                            <div class="admin__field-control">
+                                <textarea name="comment" rows="3" cols="5" id="history_comment" class="admin__control-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="admin__field">
+                            <div class="order-history-comments-actions">
+                                <button id="id_312ae08b63ef6997b290a887aa12db51" title="Submit Comment" type="submit" class="action-default scalable action-save action-secondary" onclick="" data-ui-id="widget-button-0">
+                                    <span>Submit Comment</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <ul class="note-list">
+                    <?php foreach ($block->getHistory() as $history):?>
+                    <li class="note-list-item">
+                        <span class="note-list-date"><?= $block->formatDate(
+                                $block->getQuoteAdminDate($history->getCreatedAt()),
+                                \IntlDateFormatter::MEDIUM,
+                                true
+                            ); ?></span>
+                        <span class="note-list-status"><?= array_key_exists($history->getStatusId(), $status) ? $status[$history->getStatusId()] : "" ?></span>
+                        <span class="note-list-customer">
+                            <span class="note-list-customer-notapplicable"><?= $block->getCommentUser($history->getUserId())->getName() ?></span>
+                        </span>
+                        <!--<div class="note-list-comment"></div>-->
+                        <div class="note-list-comment">
+                            <?= $history->getComment() ?>
+                        </div>
+                    </li>
+                    <?php endforeach;?>
+                </ul>
+
+            </div>
+        </div>
+        <div class="admin__page-section-item order-totals">
+            <div class="admin__page-section-item-title">
+                <span class="title">Totals</span>
+            </div>
+            <table class="data-table admin__table-secondary order-subtotal-table">
+
+                <tfoot>
+                <tr class="col-0">
+                    <td class="label">
+                        <strong>Grand Total</strong>
+                    </td>
+                    <td>
+                        <strong><span class="price"><?= $block->getFormattedPrice($_quote->getGrandTotal()) ?></span></strong>
+                    </td>
+                </tr>
+                </tfoot>
+
+                <tbody>
+                <tr class="col-0">
+                    <td class="label">
+                        Subtotal
+                    </td>
+
+                    <td>
+                        <span><span class="price"><?= $block->getFormattedPrice($_quote->getSubtotal()) ?></span></span>
+                    </td>
+                </tr>
+                <tr class="col-1">
+                    <td class="label">
+                        Shipping
+                    </td>
+                    <td>
+                        <span><span class="price"><?= $block->getFormattedPrice($_quote->getShippingAddress()->getShippingAmount()) ?></span></span>
+                    </td>
+                </tr>
+                <tr class="col-2">
+                    <td class="label">
+                        Discount (<?= $block->getDiscountData()['discount_percent'] ?>%OFF)
+                    </td>
+                    <td>
+                        <span><span class="price">-<?= $block->getDiscountData()['discount_amount'] ?></span></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<style>
+    #quote-status-form{
+        margin-top: 20px;
+    }
+    .quote-status{
+        background-image: linear-gradient(223deg, #e85d22, #5f355c);
+        padding: 10px 50px;
+        margin-left: 30px;
+        font-size: 20px;
+        margin-top: -13px;
+        color: #fff;
+    }
+
+    .drop-state{
+        padding: 5px 20px;
+        margin-left: 30px;
+        font-size: 17px;
+        margin-top: -13px;
+        color: #fff;
+        margin-right: -10px;
+        background-color: #e85d22;
+    }
+
+    button.quote-status:hover,
+    button.quote-status:focus,
+    button.quote-status:active,
+    button.quote-status:visited{
+        color: #fff;
+    }
+</style>
+
+<script>
+    require(['jquery'], function (jQuery) {
+        jQuery(document).ready(function () {
+            jQuery("#quote-status-form").submit(function (e) {
+                e.preventDefault();
+                jQuery.ajax({
+                    url: "<?=$this->getUrl('droppedcheckout/update/status')?>",
+                    method: "POST",
+                    showLoader: true,
+                    data: jQuery(this).serializeArray()
+                }).done(function (data) {
+                    if (data.status){
+                        location.reload();
+                    }
+                })
+            })
+        });
+    });
+</script>
