@@ -42,7 +42,7 @@ class QuoteCreate implements ObserverInterface
             $data = ['quote_id' => $quoteId, 'status_id' => 0];
             $this->quoteDataRepository->saveData($data);
         }catch (\Exception $exception){
-            print_r($exception->getMessage());die;
+
         }
     }
 }
