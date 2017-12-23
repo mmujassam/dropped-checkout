@@ -65,7 +65,7 @@ class QuoteListDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvide
         $this->collection->getSelect()->joinLeft(
             ['quote_status' => $this->collection->getTable('meem_quote_data')],
             "quote_status.quote_id = main_table.entity_id",
-            ["status_id"]
+            ["status_id", "dropped_at"]
         );
 
     }
